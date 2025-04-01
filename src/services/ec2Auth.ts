@@ -10,7 +10,7 @@ interface EC2Response {
 
 const API_BASE_URL = "https://1s0xmoohs9.execute-api.us-east-2.amazonaws.com";
 
-export const fetchWithAuth = async (endpoint: string, method: string = "GET", body?: any): Promise<EC2Response> => {
+export const fetchWithAuth = async (endpoint: string, method: string = "POST", body?: any): Promise<EC2Response> => {
   try {
     const requestName = endpoint.split('/').pop() || endpoint; // Extract request name from endpoint
     const authPayload = await createAuthPayload(requestName);
