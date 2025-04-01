@@ -52,7 +52,7 @@ const Login = () => {
         
         toast({
           title: "Login Successful",
-          description: "Welcome to Cloud Ninja Controls",
+          description: "Welcome to FSQSB",
         });
         
         navigate("/");
@@ -81,8 +81,8 @@ const Login = () => {
       <div className="w-full max-w-md">
         <Card>
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center">Cloud Ninja Controls</CardTitle>
-            <CardDescription className="text-center">Login to access your EC2 instance</CardDescription>
+            <CardTitle className="text-2xl font-bold text-center">Federated Status Query and System Boot</CardTitle>
+            <CardDescription className="text-center">Login to access FSQSB</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
