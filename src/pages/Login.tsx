@@ -32,6 +32,7 @@ const Login = () => {
     try {
       // Hash the password with SHA-256
       const passwordHash = await sha256(password);
+      const tokenHash = await sha256(username + "_login_" + passwordHash);
       
       // Call login API
       const response = await fetch("https://1s0xmoohs9.execute-api.us-east-2.amazonaws.com/login", {
@@ -41,7 +42,7 @@ const Login = () => {
         },
         body: JSON.stringify({
           username,
-          password: passwordHash,
+          hash: tokenHash,
         }),
       });
       
