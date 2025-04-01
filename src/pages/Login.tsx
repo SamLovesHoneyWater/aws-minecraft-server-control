@@ -81,7 +81,8 @@ const Login = () => {
       <div className="w-full max-w-md">
         <Card>
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center">Federated Status Query and System Boot</CardTitle>
+            <CardTitle className="text-2xl font-bold text-center">Federated Status Query</CardTitle>
+            <CardTitle className="text-2xl font-bold text-center">and System Boot</CardTitle>
             <CardDescription className="text-center">Login to access FSQSB</CardDescription>
           </CardHeader>
           <CardContent>
