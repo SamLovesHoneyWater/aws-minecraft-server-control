@@ -34,7 +34,7 @@ const Login = () => {
       const passwordHash = await sha256(password);
       
       // Call login API
-      const response = await fetch("http://localhost:8080/api/login", {
+      const response = await fetch("https://q6qb3bq9eg.execute-api.us-east-1.amazonaws.com/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
