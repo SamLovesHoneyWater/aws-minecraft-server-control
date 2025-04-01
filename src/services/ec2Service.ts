@@ -1,5 +1,6 @@
 
 import { toast } from "sonner";
+import { fetchWithAuth } from "./ec2Auth";
 
 interface ApiResponse<T> {
   data?: T;
@@ -16,14 +17,17 @@ const BASE_URL = 'https://1s0xmoohs9.execute-api.us-east-2.amazonaws.com';
 
 export const fetchInstanceIp = async (): Promise<ApiResponse<string>> => {
   try {
-    const response = await fetch(`${BASE_URL}/ip_addr`);
+    // Use the authenticated method from ec2Auth.ts instead
+    const response = await fetchWithAuth("/ip_addr");
     
-    if (!response.ok) {
-      throw new Error(`Failed to fetch IP address: ${response.statusText}`);
+    if (!response.success) {
+      throw new Error(response.message);
     }
     
-    const data = await response.text();
-    return { success: true, data };
+    return { 
+      success: true, 
+      data: response.data?.ip_address || "No IP available" 
+    };
   } catch (error) {
     console.error("Error fetching instance IP:", error);
     return { success: false, error: error instanceof Error ? error.message : 'Unknown error occurred' };

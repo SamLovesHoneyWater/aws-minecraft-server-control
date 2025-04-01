@@ -1,5 +1,6 @@
 
 import { createAuthPayload } from "@/utils/auth";
+import { toast } from "sonner";
 
 interface EC2Response {
   success: boolean;
@@ -7,7 +8,7 @@ interface EC2Response {
   data?: any;
 }
 
-const API_BASE_URL = "http://localhost:8080/api";
+const API_BASE_URL = "https://1s0xmoohs9.execute-api.us-east-2.amazonaws.com";
 
 export const fetchWithAuth = async (endpoint: string, method: string = "GET", body?: any): Promise<EC2Response> => {
   try {
@@ -15,7 +16,11 @@ export const fetchWithAuth = async (endpoint: string, method: string = "GET", bo
     const authPayload = await createAuthPayload(requestName);
     
     if (!authPayload) {
-      throw new Error("Authentication required");
+      toast.error("Authentication required");
+      return {
+        success: false,
+        message: "Authentication required",
+      };
     }
     
     // Merge auth payload with any existing body
@@ -34,6 +39,7 @@ export const fetchWithAuth = async (endpoint: string, method: string = "GET", bo
     
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: "Unknown error" }));
+      toast.error(errorData.message || `Error: ${response.status}`);
       return {
         success: false,
         message: errorData.message || `Error: ${response.status}`,
@@ -49,6 +55,7 @@ export const fetchWithAuth = async (endpoint: string, method: string = "GET", bo
     };
   } catch (error) {
     console.error(`Error with ${endpoint}:`, error);
+    toast.error(error instanceof Error ? error.message : "Unknown error occurred");
     return {
       success: false,
       message: error instanceof Error ? error.message : "Unknown error occurred",
