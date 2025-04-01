@@ -16,7 +16,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 flex flex-col">
       <header className="p-4 border-b bg-white flex justify-between items-center">
-        <h1 className="text-2xl font-semibold text-slate-800">Cloud Ninja Controls</h1>
+        <h1 className="text-2xl font-semibold text-slate-800">Federated Status Query and System Boot</h1>
         <Button variant="ghost" size="sm" onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />
           Logout
