@@ -26,7 +26,7 @@ export const fetchInstanceIp = async (): Promise<ApiResponse<string>> => {
     
     return { 
       success: true, 
-      data: response.data?.ip_address || "No IP available" 
+      data: response.data?.public_ip || "No IP available" 
     };
   } catch (error) {
     console.error("Error fetching instance IP:", error);
