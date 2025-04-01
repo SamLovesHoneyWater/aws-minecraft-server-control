@@ -12,7 +12,7 @@ export interface InstanceStatus {
   state: 'running' | 'stopped' | 'pending' | 'stopping' | 'unknown';
 }
 
-const BASE_URL = import.meta.env.PROD ? '/api' : 'http://localhost:8080/api';
+const BASE_URL = 'https://1s0xmoohs9.execute-api.us-east-2.amazonaws.com';
 
 export const fetchInstanceIp = async (): Promise<ApiResponse<string>> => {
   try {
