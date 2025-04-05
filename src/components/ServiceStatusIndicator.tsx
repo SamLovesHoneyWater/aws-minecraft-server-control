@@ -1,21 +1,21 @@
 
 import { cn } from "@/lib/utils";
 
-interface StatusIndicatorProps {
-  status: 'running' | 'stopped' | 'pending' | 'stopping' | 'unknown';
+interface ServiceStatusIndicatorProps {
+  status: 'running' | 'stopped' | 'unknown';
   className?: string;
+  isFresh: boolean;
 }
 
-const StatusIndicator = ({ status, className }: StatusIndicatorProps) => {
+const ServiceStatusIndicator = ({ status, className, isFresh }: ServiceStatusIndicatorProps) => {
   const getStatusColor = () => {
+    if (!isFresh) return 'bg-gray-400';
+    
     switch (status) {
       case 'running':
         return 'bg-green-500';
       case 'stopped':
         return 'bg-red-500';
-      case 'pending':
-      case 'stopping':
-        return 'bg-yellow-500 animate-pulse';
       case 'unknown':
       default:
         return 'bg-gray-400';
@@ -23,19 +23,21 @@ const StatusIndicator = ({ status, className }: StatusIndicatorProps) => {
   };
 
   const getStatusText = () => {
+    let baseText = "";
     switch (status) {
       case 'running':
-        return 'Instance Running';
+        baseText = 'Running';
+        break;
       case 'stopped':
-        return 'Instance Stopped';
-      case 'pending':
-        return 'Instance Starting...';
-      case 'stopping':
-        return 'Instance Stopping...';
+        baseText = 'Stopped';
+        break;
       case 'unknown':
       default:
-        return 'Instance Status Unknown';
+        baseText = 'Unknown';
+        break;
     }
+    
+    return isFresh ? baseText : `${baseText} (Outdated)`;
   };
 
   return (
@@ -46,4 +48,4 @@ const StatusIndicator = ({ status, className }: StatusIndicatorProps) => {
   );
 };
 
-export default StatusIndicator;
+export default ServiceStatusIndicator;

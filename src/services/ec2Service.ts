@@ -13,6 +13,10 @@ export interface InstanceStatus {
   state: 'running' | 'stopped' | 'pending' | 'stopping' | 'unknown';
 }
 
+export interface ServiceStatus {
+  state: 'running' | 'stopped' | 'unknown';
+}
+
 const BASE_URL = 'https://1s0xmoohs9.execute-api.us-east-2.amazonaws.com';
 
 export const fetchInstanceIp = async (): Promise<ApiResponse<string>> => {
@@ -33,6 +37,7 @@ export const fetchInstanceIp = async (): Promise<ApiResponse<string>> => {
     return { success: false, error: error instanceof Error ? error.message : 'Unknown error occurred' };
   }
 };
+
 export const startInstance = async (): Promise<ApiResponse<void>> => {
   try {
     const response = await fetchWithAuth("/start_instance");
@@ -67,20 +72,64 @@ export const stopInstance = async (): Promise<ApiResponse<void>> => {
   }
 };
 
-export const restartService = async (): Promise<ApiResponse<void>> => {
+export const startService = async (): Promise<ApiResponse<void>> => {
   try {
-    const response = await fetchWithAuth("/restart_service");
+    const response = await fetchWithAuth("/start_service");
     
     if (!response.success) {
       throw new Error(response.message);
     }
     
-    toast.success("Service restart initiated");
+    toast.success("Service start initiated");
     return { success: true };
   } catch (error) {
-    console.error("Error restarting service:", error);
-    toast.error("Failed to restart service");
+    console.error("Error starting service:", error);
+    toast.error("Failed to start service");
     return { success: false, error: error instanceof Error ? error.message : 'Unknown error occurred' };
+  }
+};
+
+export const stopService = async (): Promise<ApiResponse<void>> => {
+  try {
+    const response = await fetchWithAuth("/stop_service");
+    
+    if (!response.success) {
+      throw new Error(response.message);
+    }
+    
+    toast.success("Service stop initiated");
+    return { success: true };
+  } catch (error) {
+    console.error("Error stopping service:", error);
+    toast.error("Failed to stop service");
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error occurred' };
+  }
+};
+
+export const getServiceStatus = async (): Promise<ApiResponse<ServiceStatus>> => {
+  try {
+    const response = await fetchWithAuth("/service_status");
+    
+    if (!response.success) {
+      throw new Error(response.message);
+    }
+    
+    const serviceState = response.data?.state || 'unknown';
+    return {
+      success: true,
+      data: {
+        state: serviceState
+      }
+    };
+  } catch (error) {
+    console.error("Error getting service status:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error occurred',
+      data: {
+        state: 'unknown'
+      }
+    };
   }
 };
 
