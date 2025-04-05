@@ -88,25 +88,26 @@ export const getInstanceStatus = async (): Promise<ApiResponse<InstanceStatus>> 
   try {
     const ipResponse = await fetchInstanceIp();
     
-    // If IP is fetched successfully, we assume the instance is running
-    if (ipResponse.success && ipResponse.data) {
-      return {
+    // Check both for success and a valid IP (not "None")
+      if (ipResponse.success && ipResponse.data && 
+        ipResponse.data !== "None") {
+        return {
         success: true,
         data: {
           ipAddress: ipResponse.data,
           state: 'running'
         }
-      };
-    } else {
-      // If IP cannot be fetched, we assume instance is stopped
-      return {
+        };
+      } else {
+        // If IP cannot be fetched or is "None", we assume instance is stopped
+        return {
         success: true,
         data: {
           ipAddress: null,
           state: 'stopped'
         }
-      };
-    }
+        };
+      }
   } catch (error) {
     console.error("Error getting instance status:", error);
     return {
