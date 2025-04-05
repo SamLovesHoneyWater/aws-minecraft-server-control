@@ -111,7 +111,7 @@ const EC2Dashboard = () => {
       // Set optimistic UI update
       setInstanceStatus(prev => ({ ...prev, state: 'pending' }));
       // Refresh status after a delay to give time for the operation to take effect
-      setTimeout(() => fetchStatus(), 5000);
+      setTimeout(() => fetchStatus(), 7000);
     } finally {
       setActionLoading(null);
     }
@@ -124,7 +124,7 @@ const EC2Dashboard = () => {
       // Set optimistic UI update
       setInstanceStatus(prev => ({ ...prev, state: 'stopping' }));
       // Refresh status after a delay to give time for the operation to take effect
-      setTimeout(() => fetchStatus(), 5000);
+      setTimeout(() => fetchStatus(), 10000);
     } finally {
       setActionLoading(null);
     }
