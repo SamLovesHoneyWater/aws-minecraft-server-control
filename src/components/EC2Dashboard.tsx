@@ -210,7 +210,7 @@ const EC2Dashboard = () => {
                 <ActionButton
                   variant="success"
                   onClick={handleStartService}
-                  disabled={!isInstanceRunning || isServiceRunning || isAnyActionInProgress}
+                  disabled={!isInstanceRunning || isServiceRunning || isAnyActionInProgress || serviceStatus.state === 'unknown'}
                   isLoading={actionLoading === "start-service"}
                 >
                   <PlayCircle className="h-4 w-4 mr-1" />
@@ -220,7 +220,7 @@ const EC2Dashboard = () => {
                 <ActionButton
                   variant="destructive"
                   onClick={handleStopService}
-                  disabled={!isInstanceRunning || serviceStatus.state === 'stopped' || isAnyActionInProgress}
+                  disabled={!isInstanceRunning || serviceStatus.state === 'stopped' || isAnyActionInProgress || serviceStatus.state === 'unknown'}
                   isLoading={actionLoading === "stop-service"}
                 >
                   <StopCircle className="h-4 w-4 mr-1" />
