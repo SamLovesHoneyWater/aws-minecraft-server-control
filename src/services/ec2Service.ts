@@ -33,15 +33,12 @@ export const fetchInstanceIp = async (): Promise<ApiResponse<string>> => {
     return { success: false, error: error instanceof Error ? error.message : 'Unknown error occurred' };
   }
 };
-
 export const startInstance = async (): Promise<ApiResponse<void>> => {
   try {
-    const response = await fetch(`${BASE_URL}/start_instance`, { 
-      method: 'POST',
-    });
+    const response = await fetchWithAuth("/start_instance");
     
-    if (!response.ok) {
-      throw new Error(`Failed to start instance: ${response.statusText}`);
+    if (!response.success) {
+      throw new Error(response.message);
     }
     
     toast.success("Instance start initiated");
@@ -55,12 +52,10 @@ export const startInstance = async (): Promise<ApiResponse<void>> => {
 
 export const stopInstance = async (): Promise<ApiResponse<void>> => {
   try {
-    const response = await fetch(`${BASE_URL}/stop_instance`, { 
-      method: 'POST',
-    });
+    const response = await fetchWithAuth("/stop_instance");
     
-    if (!response.ok) {
-      throw new Error(`Failed to stop instance: ${response.statusText}`);
+    if (!response.success) {
+      throw new Error(response.message);
     }
     
     toast.success("Instance stop initiated");
@@ -74,12 +69,10 @@ export const stopInstance = async (): Promise<ApiResponse<void>> => {
 
 export const restartService = async (): Promise<ApiResponse<void>> => {
   try {
-    const response = await fetch(`${BASE_URL}/restart_service`, {
-      method: 'POST',
-    });
+    const response = await fetchWithAuth("/restart_service");
     
-    if (!response.ok) {
-      throw new Error(`Failed to restart service: ${response.statusText}`);
+    if (!response.success) {
+      throw new Error(response.message);
     }
     
     toast.success("Service restart initiated");
