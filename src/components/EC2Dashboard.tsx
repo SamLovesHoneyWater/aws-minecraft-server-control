@@ -60,15 +60,22 @@ const EC2Dashboard = () => {
         setInstanceStatus(instanceResponse.data);
         
         // Only fetch service status if instance is running
-        if (instanceResponse.data.state === 'running') {
-          const serviceResponse = await getServiceStatus();
-          if (serviceResponse.success && serviceResponse.data) {
-            setServiceStatus(serviceResponse.data);
+          if (instanceResponse.data.state === 'running') {
+            const serviceResponse = await getServiceStatus();
+            if (serviceResponse.success && serviceResponse.data) {
+              setServiceStatus(serviceResponse.data);
+            } else {
+              setServiceStatus({ state: 'unknown' });
+              toast({
+                title: "Service Status Error",
+                description: serviceResponse.error || "Failed to get service status",
+                variant: "destructive"
+              });
+            }
+          } else {
+            // If instance is not running, service must be stopped
+            setServiceStatus({ state: 'stopped' });
           }
-        } else {
-          // If instance is not running, service must be stopped
-          setServiceStatus({ state: 'stopped' });
-        }
         
         // Start freshness timer
         startFreshnessTimer();
