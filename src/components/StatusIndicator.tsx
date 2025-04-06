@@ -46,13 +46,18 @@ const StatusIndicator = ({ status, className, isFresh = true }: StatusIndicatorP
         break;
     }
     
-    return isFresh ? baseText : `Outdated (Was: ${baseText})`;
+    return isFresh ? baseText : `${baseText} (Outdated)`;
   };
 
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <div className={cn("w-3 h-3 rounded-full", getStatusColor())} />
-      <span className="text-sm font-medium">{getStatusText()}</span>
+      <span className={cn(
+        "text-sm font-medium",
+        !isFresh && "text-gray-500"
+      )}>
+        {getStatusText()}
+      </span>
     </div>
   );
 };

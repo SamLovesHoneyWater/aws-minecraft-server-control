@@ -16,7 +16,6 @@ const EC2Dashboard = () => {
   const {
     loading,
     instanceStatus,
-    serviceStatus,
     actionLoading,
     fetchStatus,
     handleStartInstance,

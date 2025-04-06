@@ -19,25 +19,6 @@ export interface ServiceStatus {
 
 const BASE_URL = 'https://1s0xmoohs9.execute-api.us-east-2.amazonaws.com';
 
-export const fetchInstanceIp = async (): Promise<ApiResponse<string>> => {
-  try {
-    // Use the authenticated method from ec2Auth.ts instead
-    const response = await fetchWithAuth("/ip_addr");
-    
-    if (!response.success) {
-      throw new Error(response.message);
-    }
-    
-    return { 
-      success: true, 
-      data: response.data?.public_ip || "No IP available" 
-    };
-  } catch (error) {
-    console.error("Error fetching instance IP:", error);
-    return { success: false, error: error instanceof Error ? error.message : 'Unknown error occurred' };
-  }
-};
-
 export const startInstance = async (): Promise<ApiResponse<void>> => {
   try {
     const response = await fetchWithAuth("/start_instance");
@@ -106,57 +87,25 @@ export const stopService = async (): Promise<ApiResponse<void>> => {
   }
 };
 
-export const getServiceStatus = async (): Promise<ApiResponse<ServiceStatus>> => {
+export const getInstanceStatus = async (): Promise<ApiResponse<InstanceStatus>> => {
   try {
-    const response = await fetchWithAuth("/service_status");
+    const response = await fetchWithAuth("/instance_status");
     
     if (!response.success) {
       throw new Error(response.message);
     }
     
-    const serviceState = response.data?.state || 'unknown';
+    // Extract state and IP address from the response
+    const state = response.data?.state || 'unknown';
+    const ipAddress = response.data?.ip_address || null;
+    
     return {
       success: true,
       data: {
-        state: serviceState
+        ipAddress,
+        state: state as 'running' | 'stopped' | 'pending' | 'stopping' | 'unknown'
       }
     };
-  } catch (error) {
-    console.error("Error getting service status:", error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error occurred',
-      data: {
-        state: 'unknown'
-      }
-    };
-  }
-};
-
-export const getInstanceStatus = async (): Promise<ApiResponse<InstanceStatus>> => {
-  try {
-    const ipResponse = await fetchInstanceIp();
-    
-    // Check both for success and a valid IP (not "None")
-      if (ipResponse.success && ipResponse.data && 
-        ipResponse.data !== "None") {
-        return {
-        success: true,
-        data: {
-          ipAddress: ipResponse.data,
-          state: 'running'
-        }
-        };
-      } else {
-        // If IP cannot be fetched or is "None", we assume instance is stopped
-        return {
-        success: true,
-        data: {
-          ipAddress: null,
-          state: 'stopped'
-        }
-        };
-      }
   } catch (error) {
     console.error("Error getting instance status:", error);
     return {

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { 
@@ -5,7 +6,6 @@ import {
   stopInstance,
   startService,
   InstanceStatus,
-  ServiceStatus,
   getInstanceStatus
 } from "@/services/ec2Service";
 
@@ -17,9 +17,6 @@ export const useServerControl = (onStatusUpdate: () => void) => {
     ipAddress: null,
     state: 'unknown'
   });
-  const [serviceStatus, setServiceStatus] = useState<ServiceStatus>({
-    state: 'unknown'
-  });
 
   const fetchStatus = async () => {
     setLoading(true);
@@ -27,15 +24,6 @@ export const useServerControl = (onStatusUpdate: () => void) => {
       const instanceResponse = await getInstanceStatus();
       if (instanceResponse.success && instanceResponse.data) {
         setInstanceStatus(instanceResponse.data);
-        
-        // If instance is running, we'll assume service is stopped initially
-        // We're not making the service_status call anymore
-        if (instanceResponse.data.state === 'running') {
-          setServiceStatus({ state: 'stopped' });
-        } else {
-          // If instance is not running, service must be stopped
-          setServiceStatus({ state: 'stopped' });
-        }
         
         // Call the callback to start freshness timer
         onStatusUpdate();
@@ -83,8 +71,7 @@ export const useServerControl = (onStatusUpdate: () => void) => {
     setActionLoading("start-service");
     try {
       await startService();
-      // Set optimistic UI update
-      setServiceStatus({ state: 'running' });
+      // Set optimistic UI update for service start
       // Refresh status after a delay
       setTimeout(() => fetchStatus(), 5000);
     } finally {
@@ -94,28 +81,36 @@ export const useServerControl = (onStatusUpdate: () => void) => {
 
   // Derived state
   const isInstanceRunning = instanceStatus.state === 'running';
-  const isServiceRunning = serviceStatus.state === 'running';
   const isAnyActionInProgress = actionLoading !== null;
   
-  // Activity state for each card
-  const instanceActive = !isInstanceRunning && !isAnyActionInProgress;
-  const serviceActive = isInstanceRunning && !isServiceRunning && !isAnyActionInProgress;
-  const shutdownActive = isInstanceRunning && !isAnyActionInProgress;
+  // Activity state for each card based on the current instance state
+  const instanceActive = () => {
+    // Boot Up button/card is active only when instance is stopped and no action in progress
+    return instanceStatus.state === 'stopped' && !isAnyActionInProgress;
+  };
+  
+  const serviceActive = () => {
+    // Play button/card is active only when instance is running and no action in progress
+    return isInstanceRunning && !isAnyActionInProgress;
+  };
+  
+  const shutdownActive = () => {
+    // Shutdown button/card is active only when instance is running and no action in progress
+    return isInstanceRunning && !isAnyActionInProgress;
+  };
 
   return {
     loading,
     instanceStatus,
-    serviceStatus,
     actionLoading,
     fetchStatus,
     handleStartInstance,
     handleStopInstance,
     handleStartService,
     isInstanceRunning,
-    isServiceRunning,
     isAnyActionInProgress,
-    instanceActive,
-    serviceActive,
-    shutdownActive
+    instanceActive: instanceActive(),
+    serviceActive: serviceActive(),
+    shutdownActive: shutdownActive()
   };
 };

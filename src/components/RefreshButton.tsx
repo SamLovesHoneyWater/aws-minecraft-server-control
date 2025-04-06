@@ -14,14 +14,15 @@ const RefreshButton = ({ onClick, isLoading, isFresh }: RefreshButtonProps) => {
       onClick={onClick} 
       disabled={isLoading}
       className={cn(
-        "flex items-center gap-1 px-3 py-2 rounded-md transition-colors",
+        "flex items-center gap-2 px-4 py-3 rounded-md transition-colors shadow-md font-medium text-base",
         !isFresh 
-          ? "text-white font-medium bg-primary hover:bg-primary/90 animate-pulse shadow-md" 
-          : "text-muted-foreground hover:bg-slate-100"
+          ? "bg-primary text-white animate-pulse hover:bg-primary/90" 
+          : "bg-slate-100 text-slate-700 hover:bg-slate-200",
+        "disabled:opacity-70"
       )}
     >
-      <RefreshCw className={cn("h-4 w-4", isLoading && "animate-spin")} />
-      {isLoading ? 'Refreshing...' : 'Refresh Status'}
+      <RefreshCw className={cn("h-5 w-5", isLoading && "animate-spin")} />
+      {isLoading ? 'Refreshing...' : isFresh ? 'Refresh Status' : 'Status Outdated - Click to Refresh'}
     </button>
   );
 };
