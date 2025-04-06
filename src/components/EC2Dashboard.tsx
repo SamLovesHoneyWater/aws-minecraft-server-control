@@ -1,192 +1,57 @@
 
-import { useState, useEffect, useRef } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { useToast } from "@/components/ui/use-toast";
-import { cn } from "@/lib/utils";
-import { 
-  fetchInstanceIp, 
-  startInstance, 
-  stopInstance,
-  startService,
-  stopService,
-  getInstanceStatus,
-  getServiceStatus,
-  InstanceStatus,
-  ServiceStatus
-} from "@/services/ec2Service";
-import StatusIndicator from "@/components/StatusIndicator";
-import ServiceStatusIndicator from "@/components/ServiceStatusIndicator";
+import { useEffect } from "react";
+import { Power, PowerOff } from "lucide-react";
 import IPAddressDisplay from "@/components/IPAddressDisplay";
-import { PowerOff, RefreshCw, Play, Power } from "lucide-react";
 import DashboardCard from "@/components/DashboardCard";
+import StatusBar from "@/components/StatusBar";
+import RefreshButton from "@/components/RefreshButton";
+import FreshnessWarning from "@/components/FreshnessWarning";
+import { useStatusFreshness } from "@/hooks/useStatusFreshness";
+import { useServerControl } from "@/hooks/useServerControl";
 
 const STATUS_FRESHNESS_TIMEOUT = 30000; // 30 seconds
 
 const EC2Dashboard = () => {
-  const { toast } = useToast();
-  const [loading, setLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState<string | null>(null);
-  const [instanceStatus, setInstanceStatus] = useState<InstanceStatus>({
-    ipAddress: null,
-    state: 'unknown'
-  });
-  const [serviceStatus, setServiceStatus] = useState<ServiceStatus>({
-    state: 'unknown'
-  });
-  const [statusFresh, setStatusFresh] = useState(true);
-  const statusTimerRef = useRef<number | null>(null);
+  const { statusFresh, startFreshnessTimer } = useStatusFreshness(STATUS_FRESHNESS_TIMEOUT);
+  const {
+    loading,
+    instanceStatus,
+    serviceStatus,
+    actionLoading,
+    fetchStatus,
+    handleStartInstance,
+    handleStopInstance,
+    handleStartService,
+    isInstanceRunning,
+    instanceActive,
+    serviceActive,
+    shutdownActive
+  } = useServerControl(startFreshnessTimer);
 
-  const startFreshnessTimer = () => {
-    // Clear any existing timer
-    if (statusTimerRef.current) {
-      window.clearTimeout(statusTimerRef.current);
-    }
-    
-    // Set status as fresh
-    setStatusFresh(true);
-    
-    // Start a new timer
-    statusTimerRef.current = window.setTimeout(() => {
-      setStatusFresh(false);
-    }, STATUS_FRESHNESS_TIMEOUT);
-  };
-
-  const fetchStatus = async () => {
-    setLoading(true);
-    try {
-      const instanceResponse = await getInstanceStatus();
-      if (instanceResponse.success && instanceResponse.data) {
-        setInstanceStatus(instanceResponse.data);
-        
-        // Only fetch service status if instance is running
-        if (instanceResponse.data.state === 'running') {
-          const serviceResponse = await getServiceStatus();
-          if (serviceResponse.success && serviceResponse.data) {
-            setServiceStatus(serviceResponse.data);
-          } else {
-            setServiceStatus({ state: 'unknown' });
-            toast({
-              title: "Service Status Error",
-              description: serviceResponse.error || "Failed to get service status",
-              variant: "destructive"
-            });
-          }
-        } else {
-          // If instance is not running, service must be stopped
-          setServiceStatus({ state: 'stopped' });
-        }
-        
-        // Start freshness timer
-        startFreshnessTimer();
-      } else {
-        toast({
-          title: "Error",
-          description: instanceResponse.error || "Failed to get instance status",
-          variant: "destructive"
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching status:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Initial status fetch on component mount
   useEffect(() => {
     fetchStatus();
-    
-    // Clear timer when component unmounts
-    return () => {
-      if (statusTimerRef.current) {
-        window.clearTimeout(statusTimerRef.current);
-      }
-    };
   }, []);
-
-  const handleStartInstance = async () => {
-    setActionLoading("start-instance");
-    try {
-      await startInstance();
-      // Set optimistic UI update
-      setInstanceStatus(prev => ({ ...prev, state: 'pending' }));
-      // Refresh status after a delay to give time for the operation to take effect
-      setTimeout(() => fetchStatus(), 7000);
-    } finally {
-      setActionLoading(null);
-    }
-  };
-
-  const handleStopInstance = async () => {
-    setActionLoading("stop-instance");
-    try {
-      await stopInstance();
-      // Set optimistic UI update
-      setInstanceStatus(prev => ({ ...prev, state: 'stopping' }));
-      // Refresh status after a delay to give time for the operation to take effect
-      setTimeout(() => fetchStatus(), 10000);
-    } finally {
-      setActionLoading(null);
-    }
-  };
-
-  const handleStartService = async () => {
-    setActionLoading("start-service");
-    try {
-      await startService();
-      // Set optimistic UI update
-      setServiceStatus({ state: 'running' });
-      // Refresh status after a delay
-      setTimeout(() => fetchStatus(), 5000);
-    } finally {
-      setActionLoading(null);
-    }
-  };
-
-  const isInstanceRunning = instanceStatus.state === 'running';
-  const isServiceRunning = serviceStatus.state === 'running';
-  const isAnyActionInProgress = actionLoading !== null;
-  
-  // State to determine which card should be active
-  const instanceActive = !isInstanceRunning && !isAnyActionInProgress;
-  const serviceActive = isInstanceRunning && !isServiceRunning && !isAnyActionInProgress;
-  const shutdownActive = isInstanceRunning && !isAnyActionInProgress;
 
   return (
     <div className="w-full p-4 space-y-6">
       <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-3">
-          <h2 className="text-2xl font-bold">Minecraft Server Control</h2>
-          {isInstanceRunning && 
-            <div className="flex items-center gap-2">
-              <StatusIndicator 
-                status={instanceStatus.state} 
-                className={!statusFresh ? "opacity-70" : ""} 
-              />
-              {isInstanceRunning && 
-                <ServiceStatusIndicator 
-                  status={serviceStatus.state} 
-                  isFresh={statusFresh}
-                />
-              }
-            </div>
-          }
-        </div>
+        <StatusBar 
+          instanceStatus={instanceStatus}
+          serviceStatus={serviceStatus}
+          statusFresh={statusFresh}
+          isInstanceRunning={isInstanceRunning}
+        />
         
         {instanceStatus.ipAddress && 
           <IPAddressDisplay ipAddress={instanceStatus.ipAddress} isLoading={loading} />
         }
         
-        <button 
+        <RefreshButton 
           onClick={fetchStatus} 
-          disabled={loading}
-          className={cn(
-            "flex items-center gap-1 px-3 py-2 rounded-md transition-colors",
-            !statusFresh ? "text-primary font-medium bg-blue-50 hover:bg-blue-100" : "text-muted-foreground hover:bg-slate-100"
-          )}
-        >
-          <RefreshCw className={cn("h-4 w-4", loading && "animate-spin")} />
-          {loading ? 'Refreshing...' : 'Refresh Status'}
-        </button>
+          isLoading={loading}
+          isFresh={statusFresh}
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -228,14 +93,7 @@ const EC2Dashboard = () => {
         />
       </div>
 
-      {!statusFresh && (
-        <div className="mt-4 bg-yellow-50 p-3 rounded-md text-amber-700 text-sm flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-          </svg>
-          Status information may be outdated. Please refresh to see the latest status.
-        </div>
-      )}
+      <FreshnessWarning isVisible={!statusFresh} />
     </div>
   );
 };
