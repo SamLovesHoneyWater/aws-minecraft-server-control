@@ -213,7 +213,7 @@ const EC2Dashboard = () => {
           onClick={handleStartService}
           disabled={!serviceActive}
           isLoading={actionLoading === "start-service"}
-          variant="primary"
+          variant="default"
         />
         
         {/* Shut Down Card */}
