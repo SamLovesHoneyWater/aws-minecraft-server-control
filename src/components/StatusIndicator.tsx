@@ -4,10 +4,13 @@ import { cn } from "@/lib/utils";
 interface StatusIndicatorProps {
   status: 'running' | 'stopped' | 'pending' | 'stopping' | 'unknown';
   className?: string;
+  isFresh?: boolean;
 }
 
-const StatusIndicator = ({ status, className }: StatusIndicatorProps) => {
+const StatusIndicator = ({ status, className, isFresh = true }: StatusIndicatorProps) => {
   const getStatusColor = () => {
+    if (!isFresh) return 'bg-gray-400';
+    
     switch (status) {
       case 'running':
         return 'bg-green-500';
@@ -23,19 +26,27 @@ const StatusIndicator = ({ status, className }: StatusIndicatorProps) => {
   };
 
   const getStatusText = () => {
+    let baseText = "";
     switch (status) {
       case 'running':
-        return 'Instance Running';
+        baseText = 'Instance Running';
+        break;
       case 'stopped':
-        return 'Instance Stopped';
+        baseText = 'Instance Stopped';
+        break;
       case 'pending':
-        return 'Instance Starting...';
+        baseText = 'Instance Starting...';
+        break;
       case 'stopping':
-        return 'Instance Stopping...';
+        baseText = 'Instance Stopping...';
+        break;
       case 'unknown':
       default:
-        return 'Instance Status Unknown';
+        baseText = 'Instance Status Unknown';
+        break;
     }
+    
+    return isFresh ? baseText : `${baseText} (Outdated)`;
   };
 
   return (
