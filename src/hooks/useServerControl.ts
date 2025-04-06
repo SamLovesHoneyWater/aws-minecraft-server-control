@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { 
@@ -7,8 +6,7 @@ import {
   startService,
   InstanceStatus,
   ServiceStatus,
-  getInstanceStatus,
-  getServiceStatus
+  getInstanceStatus
 } from "@/services/ec2Service";
 
 export const useServerControl = (onStatusUpdate: () => void) => {
@@ -30,19 +28,10 @@ export const useServerControl = (onStatusUpdate: () => void) => {
       if (instanceResponse.success && instanceResponse.data) {
         setInstanceStatus(instanceResponse.data);
         
-        // Only fetch service status if instance is running
+        // If instance is running, we'll assume service is stopped initially
+        // We're not making the service_status call anymore
         if (instanceResponse.data.state === 'running') {
-          const serviceResponse = await getServiceStatus();
-          if (serviceResponse.success && serviceResponse.data) {
-            setServiceStatus(serviceResponse.data);
-          } else {
-            setServiceStatus({ state: 'unknown' });
-            toast({
-              title: "Service Status Error",
-              description: serviceResponse.error || "Failed to get service status",
-              variant: "destructive"
-            });
-          }
+          setServiceStatus({ state: 'stopped' });
         } else {
           // If instance is not running, service must be stopped
           setServiceStatus({ state: 'stopped' });

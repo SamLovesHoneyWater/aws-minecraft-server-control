@@ -20,7 +20,7 @@ const StatusBar = ({
         <div className="flex items-center gap-2">
           <StatusIndicator 
             status={instanceStatus.state} 
-            className={!statusFresh ? "opacity-70" : ""} 
+            isFresh={statusFresh}
           />
         </div>
       }

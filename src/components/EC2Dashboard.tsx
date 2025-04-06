@@ -48,7 +48,10 @@ const EC2Dashboard = () => {
         {instanceStatus.ipAddress && 
           <IPAddressDisplay ipAddress={instanceStatus.ipAddress} isLoading={loading} />
         }
-        
+      </div>
+
+      {/* Prominent Refresh Button */}
+      <div className="flex justify-center mb-6">
         <RefreshButton 
           onClick={fetchStatus} 
           isLoading={loading}
