@@ -15,7 +15,7 @@ const StatusBar = ({
 }: StatusBarProps) => {
   return (
     <div className="flex items-center gap-3">
-      <h2 className="text-2xl font-bold">FSQSB</h2>
+      <h2 className="text-2xl font-bold">FSQSB Status:</h2>
       {isInstanceRunning && 
         <div className="flex items-center gap-2">
           <StatusIndicator 
