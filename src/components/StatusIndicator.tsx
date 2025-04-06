@@ -46,7 +46,7 @@ const StatusIndicator = ({ status, className, isFresh = true }: StatusIndicatorP
         break;
     }
     
-    return isFresh ? baseText : `${baseText} (Outdated)`;
+    return isFresh ? baseText : `Outdated (Was: ${baseText})`;
   };
 
   return (
