@@ -16,19 +16,19 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 flex flex-col">
       <header className="p-4 border-b bg-white flex justify-between items-center">
-        <h1 className="text-2xl font-semibold text-slate-800">Federated Status Query and System Boot</h1>
+        <h1 className="text-2xl font-semibold text-slate-800">Minecraft Server Control Panel</h1>
         <Button variant="ghost" size="sm" onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />
           Logout
         </Button>
       </header>
       
-      <main className="flex-1 flex items-center justify-center p-4">
+      <main className="flex-1 container mx-auto px-4 py-8">
         <EC2Dashboard />
       </main>
       
       <footer className="p-3 text-center text-sm text-slate-500">
-        EC2 Instance Control Panel
+        Minecraft Server Control Panel &copy; 2025
       </footer>
     </div>
   );
