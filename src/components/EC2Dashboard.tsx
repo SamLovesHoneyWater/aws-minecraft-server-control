@@ -33,12 +33,14 @@ const EC2Dashboard = () => {
     fetchStatus();
   }, []);
 
+  // All actions should be disabled if status is outdated
+  const actionsDisabled = !statusFresh;
+
   return (
     <div className="w-full p-4 space-y-6">
       <div className="flex justify-between items-center mb-6">
         <StatusBar 
           instanceStatus={instanceStatus}
-          serviceStatus={serviceStatus}
           statusFresh={statusFresh}
           isInstanceRunning={isInstanceRunning}
         />
@@ -61,7 +63,7 @@ const EC2Dashboard = () => {
           icon={<Power className="h-16 w-16 text-green-500" />}
           actionLabel="Start Machine"
           onClick={handleStartInstance}
-          disabled={!instanceActive}
+          disabled={!instanceActive || actionsDisabled}
           isLoading={actionLoading === "start-instance"}
           variant="success"
         />
@@ -76,7 +78,7 @@ const EC2Dashboard = () => {
           }
           actionLabel="Run MC Server"
           onClick={handleStartService}
-          disabled={!serviceActive}
+          disabled={!serviceActive || actionsDisabled}
           isLoading={actionLoading === "start-service"}
           variant="default"
         />
@@ -87,7 +89,7 @@ const EC2Dashboard = () => {
           icon={<PowerOff className="h-16 w-16 text-red-500" />}
           actionLabel="Stop Machine"
           onClick={handleStopInstance}
-          disabled={!shutdownActive}
+          disabled={!shutdownActive || actionsDisabled}
           isLoading={actionLoading === "stop-instance"}
           variant="destructive"
         />

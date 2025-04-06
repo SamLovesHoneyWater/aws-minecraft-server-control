@@ -30,7 +30,10 @@ const DashboardCard = ({
     )}>
       <h3 className="font-semibold text-lg mb-2">{title}</h3>
       
-      <div className="flex items-center justify-center my-8 text-4xl">
+      <div className={cn(
+        "flex items-center justify-center my-8 text-4xl",
+        disabled && "opacity-50"
+      )}>
         {icon}
       </div>
       

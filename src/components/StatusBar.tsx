@@ -1,18 +1,15 @@
 
 import StatusIndicator from "@/components/StatusIndicator";
-import ServiceStatusIndicator from "@/components/ServiceStatusIndicator";
-import { InstanceStatus, ServiceStatus } from "@/services/ec2Service";
+import { InstanceStatus } from "@/services/ec2Service";
 
 interface StatusBarProps {
   instanceStatus: InstanceStatus;
-  serviceStatus: ServiceStatus;
   statusFresh: boolean;
   isInstanceRunning: boolean;
 }
 
 const StatusBar = ({ 
   instanceStatus, 
-  serviceStatus, 
   statusFresh,
   isInstanceRunning
 }: StatusBarProps) => {
@@ -25,12 +22,6 @@ const StatusBar = ({
             status={instanceStatus.state} 
             className={!statusFresh ? "opacity-70" : ""} 
           />
-          {isInstanceRunning && 
-            <ServiceStatusIndicator 
-              status={serviceStatus.state} 
-              isFresh={statusFresh}
-            />
-          }
         </div>
       }
     </div>
