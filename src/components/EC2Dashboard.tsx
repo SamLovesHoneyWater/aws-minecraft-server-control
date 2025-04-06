@@ -87,7 +87,7 @@ const EC2Dashboard = () => {
         <DashboardCard
           title="Shut Down"
           icon={<PowerOff className="h-16 w-16 text-red-500" />}
-          actionLabel="Stop Machine"
+          actionLabel="Stop and Clean Up"
           onClick={handleStopInstance}
           disabled={!shutdownActive || actionsDisabled}
           isLoading={actionLoading === "stop-instance"}
