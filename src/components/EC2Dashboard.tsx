@@ -8,6 +8,7 @@ import RefreshButton from "@/components/RefreshButton";
 import FreshnessWarning from "@/components/FreshnessWarning";
 import { useStatusFreshness } from "@/hooks/useStatusFreshness";
 import { useServerControl } from "@/hooks/useServerControl";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const STATUS_FRESHNESS_TIMEOUT = 5000; // 5 seconds
 
@@ -98,6 +99,54 @@ const EC2Dashboard = () => {
       </div>
 
       <FreshnessWarning isVisible={!statusFresh} />
+
+      {/* User Instructions Section */}
+      <div className="mt-8 border-t pt-6">
+        <h3 className="text-xl font-semibold text-slate-800 mb-4">How to Use This Dashboard</h3>
+        
+        <div className="space-y-4">
+          <Alert>
+            <AlertTitle className="flex items-center gap-2">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-600 font-bold">1</span>
+              First: Boot Up the Machine
+            </AlertTitle>
+            <AlertDescription>
+              Click the "Start Machine" button to power on the remote system. This is required before doing anything else.
+              The machine typically takes 1-2 minutes to fully initialize.
+            </AlertDescription>
+          </Alert>
+          
+          <Alert>
+            <AlertTitle className="flex items-center gap-2">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 text-blue-600 font-bold">2</span>
+              Then: Start the Minecraft Server
+            </AlertTitle>
+            <AlertDescription>
+              Once the machine is running, click "Run MC Server" to start the Minecraft server. 
+              <strong className="block mt-2">Important Notes:</strong>
+              <ul className="list-disc pl-5 mt-1 space-y-1">
+                <li>The server typically takes about 30 seconds to start up</li>
+                <li>The server status is not displayed here - check your Minecraft client to confirm it's running</li>
+                <li>If there are issues with the server, you can restart it by clicking the same button again</li>
+                <li className="text-amber-600 font-medium">Do not click "Run MC Server" multiple times in quick succession!</li>
+              </ul>
+            </AlertDescription>
+          </Alert>
+          
+          <Alert>
+            <AlertTitle className="flex items-center gap-2">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-100 text-red-600 font-bold">3</span>
+              When Done: Shut Down the System
+            </AlertTitle>
+            <AlertDescription>
+              When the last player leaves the server, you <strong>must</strong> shut down the system by clicking "Stop and Clean Up".
+              <p className="italic text-amber-600 mt-2">
+                ⚠️ Warning: Failing to shut down will waste server resources, and the admin might just bill you for it! 😉
+              </p>
+            </AlertDescription>
+          </Alert>
+        </div>
+      </div>
     </div>
   );
 };
