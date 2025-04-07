@@ -107,6 +107,19 @@ const EC2Dashboard = () => {
         <div className="space-y-4">
           <Alert>
             <AlertTitle className="flex items-center gap-2">
+              General Notes
+            </AlertTitle>
+            <AlertDescription>
+              Instance status is updated every 5 seconds. If the status is outdated, please refresh the page.
+              The IP address of the server changes every time the instance is started, but it stays the same until the instance is stopped.
+              If you cannot connect to the server, please make sure the IP address is as displayed on the upper right corner.
+              The status of the INSTANCE is shown on the top left corner, referring to the remote machine that runs the Minecraft server.
+              However, the status of the Minecraft SERVER itself is not accessible from this dashboard, you must check it in-game.
+            </AlertDescription>
+          </Alert>
+
+          <Alert>
+            <AlertTitle className="flex items-center gap-2">
               <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-600 font-bold">1</span>
               First: Boot Up the Machine
             </AlertTitle>
@@ -126,9 +139,8 @@ const EC2Dashboard = () => {
               <strong className="block mt-2">Important Notes:</strong>
               <ul className="list-disc pl-5 mt-1 space-y-1">
                 <li className="text-amber-600 font-medium">The server typically takes about 30 seconds to start up, please wait patiently</li>
-                <li className="text-amber-600 font-medium">⚠️ Warning: Do not click "Run MC Server" multiple times in quick succession! Failure to comply might result in world file corruption!</li>
+                <li className="text-amber-600 font-medium">WARNING: Do NOT click "Run MC Server" multiple times in quick succession! Failure to comply might result in world file corruption!</li>
                 <li>If the server breaks, you can restart it with the run server button</li>
-                <li>The server status is not displayed here - check your Minecraft client to confirm it's running</li>
               </ul>
             </AlertDescription>
           </Alert>
