@@ -127,8 +127,8 @@ const EC2Dashboard = () => {
               <ul className="list-disc pl-5 mt-1 space-y-1">
                 <li className="text-amber-600 font-medium">The server typically takes about 30 seconds to start up, please wait patiently</li>
                 <li className="text-amber-600 font-medium">⚠️ Warning: Do not click "Run MC Server" multiple times in quick succession! Failure to comply might result in world file corruption!</li>
+                <li>If the server breaks, you can restart it with the run server button</li>
                 <li>The server status is not displayed here - check your Minecraft client to confirm it's running</li>
-                <li>If there are issues with the server, you can also restart it with the run server button</li>
               </ul>
             </AlertDescription>
           </Alert>
