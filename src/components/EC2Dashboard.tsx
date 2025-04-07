@@ -119,7 +119,7 @@ const EC2Dashboard = () => {
           <Alert>
             <AlertTitle className="flex items-center gap-2">
               <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 text-blue-600 font-bold">2</span>
-              Then: Start the Minecraft Server
+              Then: Start or Restart the Minecraft Server
             </AlertTitle>
             <AlertDescription>
               Once the machine is running, click "Run MC Server" to start the Minecraft server. 
