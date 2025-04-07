@@ -1,4 +1,4 @@
-# Control your Minecraft server on a website!
+# Control your Minecraft server with a website!
 
 This is the front end of a remote control for a small personal minecraft server hosted on AWS EC2.
 
