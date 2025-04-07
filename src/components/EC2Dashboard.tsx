@@ -112,7 +112,7 @@ const EC2Dashboard = () => {
             </AlertTitle>
             <AlertDescription>
               Click the "Start Machine" button to power on the remote system. This is required before doing anything else.
-              The machine typically takes 1-2 minutes to fully initialize.
+              Booting up usually takes less than 5 seconds.
             </AlertDescription>
           </Alert>
           
@@ -125,10 +125,10 @@ const EC2Dashboard = () => {
               Once the machine is running, click "Run MC Server" to start the Minecraft server. 
               <strong className="block mt-2">Important Notes:</strong>
               <ul className="list-disc pl-5 mt-1 space-y-1">
-                <li>The server typically takes about 30 seconds to start up</li>
+                <li className="text-amber-600 font-medium">The server typically takes about 30 seconds to start up, please wait patiently</li>
+                <li className="text-amber-600 font-medium">⚠️ Warning: Do not click "Run MC Server" multiple times in quick succession! Failure to comply might result in world file corruption!</li>
                 <li>The server status is not displayed here - check your Minecraft client to confirm it's running</li>
-                <li>If there are issues with the server, you can restart it by clicking the same button again</li>
-                <li className="text-amber-600 font-medium">Do not click "Run MC Server" multiple times in quick succession!</li>
+                <li>If there are issues with the server, you can also restart it with the run server button</li>
               </ul>
             </AlertDescription>
           </Alert>
@@ -140,8 +140,8 @@ const EC2Dashboard = () => {
             </AlertTitle>
             <AlertDescription>
               When the last player leaves the server, you <strong>must</strong> shut down the system by clicking "Stop and Clean Up".
-              <p className="italic text-amber-600 mt-2">
-                ⚠️ Warning: Failing to shut down will waste server resources, and the admin might just bill you for it! 😉
+              <p>
+                Failing to shut down will waste server resources -- the admin will be sad and might bill you for server costs.
               </p>
             </AlertDescription>
           </Alert>
